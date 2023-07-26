@@ -3,7 +3,7 @@ from aiogram import Router
 from . import start, help
 
 
-def handlers_default_command() -> Router:
+def setup_default_handlers() -> Router:
     router = Router()
 
     router.include_router(start.router)

@@ -7,12 +7,19 @@ if not find_dotenv():
 else:
     load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+    bot_token = os.getenv('BOT_TOKEN')
+    rapid_api_token = os.getenv("rapid_api_key")
+    host = os.getenv('HOST')
+    port = os.getenv("PORT")
+    user_name = os.getenv('USER_NAME')
+    password = os.getenv('PASSWORD')
+    db_name = os.getenv('DATABASE')
+
 DEFAULT_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку"),
     ("lower", "Вывод самых дешевых отелей в городе"),
     ("high", "Вывод самых дорогих отелей в городе"),
-    ("custom", "Кастом."),
+    ("custom", "Расширенный поиск."),
     ("history", "Показать историю поиска"),
 )

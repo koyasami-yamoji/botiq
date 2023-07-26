@@ -11,5 +11,5 @@ class HotelInfoState(StatesGroup):
     max_price = State()
     min_price = State()
     count_hotels = State()
-    input_date = State()
+    out_date = State()
     select_number = State()
