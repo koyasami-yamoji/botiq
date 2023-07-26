@@ -27,3 +27,6 @@ async def get_count_photo(message: Message, state: FSMContext) -> None:
     await my_calendar(message, 'заезда')
 
 
+@router.message(StateFilter(HotelInfoState.count_photo))
+async def wrong_count_photo(message: Message):
+    await message.answer('Ошибка ввода. Введите число.')

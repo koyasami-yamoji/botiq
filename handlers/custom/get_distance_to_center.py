@@ -32,7 +32,7 @@ async def get_max_distance_to_center(message: Message, state: FSMContext):
 				f'{message.text} User_id {message.chat.id}')
 	await state.update_data(max_distance=message.text)
 	data = await state.get_data()
-	await find_hotel(message, data)
+	await find_hotel(message, data, state)
 
 
 @router.message(StateFilter(HotelInfoState.max_distance_to_center))

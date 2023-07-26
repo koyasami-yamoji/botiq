@@ -1,5 +1,3 @@
-
-
 def parse_result(parse_list: dict, data: dict) -> dict:
 	hotels_data = {}
 	if data['command'] in ['/lower', 'higher']:
@@ -26,7 +24,7 @@ def parse_result(parse_list: dict, data: dict) -> dict:
 
 
 def create_hotel_data(hotel: dict) -> dict:
-	hotel_data = {'name': hotel['name'], 'id': int(hotel['id']),
+	hotel_data = {'name': hotel['name'], 'id': hotel['id'],
 				  'distance': hotel['destinationInfo']['distanceFromDestination']['value'] * 1.61,
 				  'unit': hotel['destinationInfo']['distanceFromDestination']['unit'],
 				  'price': hotel['price']['lead']['amount'],

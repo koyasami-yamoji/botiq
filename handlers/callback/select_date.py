@@ -1,3 +1,4 @@
+import datetime
 
 from utils.create_calendar import my_calendar
 from keyboards.inline.calendar.calendar import Calendar, check_month_day
@@ -46,7 +47,7 @@ async def select_out_date(call: CallbackQuery, state: FSMContext, callback_data:
 
         else:
             data = await state.get_data()
-            await find_hotel(message=call.message, data=data)
+            await find_hotel(message=call.message, data=data, state=state)
     else:
         await call.message.answer('Дата выезда должна быть больше даты заезда')
         await call.message.delete()
@@ -55,59 +56,17 @@ async def select_out_date(call: CallbackQuery, state: FSMContext, callback_data:
 
 @router.callback_query(CalendarCallback.filter(F.action == 'DAY'))
 async def select_date(call: CallbackQuery, state: FSMContext, callback_data: CalendarCallback):
-    year = callback_data.year
-    month = callback_data.month
-    day = callback_data.day
-    logger.info(f'Выбрана дата заезда {year}:{month}:{day} . User_id: {call.message.chat.id}')
-    await state.update_data(CheckInDate={'day': day, 'month': month, 'year': year})
-    await call.message.delete()
-    await state.set_state(HotelInfoState.out_date)
-    await my_calendar(call.message, 'выезда')
-
-
-
-
-
-
-
-
-
-# @router.callback_query(CalendarCallback.filter(F.action == 'DAY'))
-# async def select_date(call: CallbackQuery, state: FSMContext, callback_data: CalendarCallback):
-# 	year = callback_data.year
-# 	month = callback_data.month
-# 	day = callback_data.day
-#
-# 	await state.set_state(HotelInfoState.input_date)
-# 	data = await state.get_data()
-# 	logger.info(f'Выбрана дата пользователем, проверяем User_id: {call.message.chat.id}')
-# 	select_date_ = year + check_month_day(month) + check_month_day(day)
-#
-# 	if 'CheckInDate' in data:
-# 		checkin = int(data['CheckInDate']['year'] + data['CheckInDate']['month'] + data['CheckInDate']['day'])
-#
-# 		if int(select_date_) > checkin:
-# 			logger.info(f'Ввод и сохранения даты выезда пользователем {call.message.chat.id}')
-# 			await state.update_data(CheckOutDate={'day': day, 'month': month, 'year': year})
-# 			await state.update_data(min_distance=0)
-# 			await state.update_data(max_distance=0)
-# 			await call.message.delete()
-#
-# 			if data['sort'] == 'DISTANCE':
-# 				await state.set_state(HotelInfoState.min_price)
-# 				await call.message.answer('Введите минимальную стоимость отела за сутки (В долларах Сша)')
-#
-# 			else:
-# 				await find_hotel(message=call.message, data=data)
-#
-# 		else:
-# 			await call.message.answer('Дата выезда должна быть больше даты заезда')
-# 			await call.message.delete()
-# 			await my_calendar(call.message, 'выезда')
-# 	else:
-# 		logger.info(f'Ввод и сохранения даты заезда пользователем User_id {call.message.chat.id}')
-# 		await state.update_data(CheckInDate={'day': day, 'month': month, 'year': year})
-# 		await call.message.delete()
-# 		await my_calendar(call.message, 'выезда')
-
-
+    year, month, day = callback_data.year, callback_data.month, callback_data.day
+    now_year, now_month, now_day = datetime.datetime.now().year, datetime.datetime.now().month,\
+                                   datetime.datetime.now().day
+    if year + check_month_day(month) + check_month_day(day) < str(now_year) + check_month_day(month) + check_month_day(day):
+        logger.info(f'Выбрана дата заезда {year}:{month}:{day} . User_id: {call.message.chat.id}')
+        await state.update_data(CheckInDate={'day': day, 'month': month, 'year': year})
+        await call.message.delete()
+        await state.set_state(HotelInfoState.out_date)
+        await my_calendar(call.message, 'выезда')
+    else:
+        logger.info(f'Выбранная дата заезда меньше текущей даты. User_id: {call.message.chat.id}')
+        await call.message.delete()
+        await my_calendar(call.message, 'заезда')
+        await call.message.answer('нужно выбрать дату, которая находится после текущего дня.')

@@ -6,11 +6,10 @@ from loguru import logger
 async def create_hotel_message(message: Message, hotel: dict, data: dict):
 	string = f"🏙 Название отеля: {hotel['name']}\n" \
 			 f"🏢 Адрес отеля: {hotel['address']}\n" \
-			 f"🌐 Сайт: https://www.hotels.com/ho{hotel['id']}\n" \
+			 f"🌐 Сайт: f'https://www.hotels.com/h{hotel['id']}.Hotel-Information\n" \
 			 f"🚍 Расстояние до центра: {hotel['distance']} Км\n" \
 			 f"💵 Стоимость проживания в сутки {hotel['price']}\n" \
 			 f"⭐ рейтинг по мнению посетителей {hotel['user_rating']}\n" \
-			 f"🗺 Отель на карте: https://maps.google.com/maps?z=12&t=m&q=loc:{hotel['coordinates']}"
 
 	image_url = [hotel['images'][url] for url in range(int(data['count_photo']))]
 	medias = []
@@ -23,4 +22,4 @@ async def create_hotel_message(message: Message, hotel: dict, data: dict):
 	else:
 		await message.answer(text=string)
 
-	logger.info(f'Вывод в чат информацию о отеле. User_id {message.message.chat.id}')
+	logger.info(f'Вывод в чат информацию о отеле. User_id {message.chat.id}')

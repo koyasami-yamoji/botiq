@@ -6,3 +6,4 @@ class CalendarCallback(CallbackData, prefix='cal'):
 	year: str
 	month: str
 	day: str
+

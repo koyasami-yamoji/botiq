@@ -3,7 +3,7 @@ from aiogram.types import Message
 import json
 
 
-async def request_photo(message: Message, hotel_id: int):
+async def request_photo(message: Message, hotel_id):
 	payload = {
 		"currency": "USD",
 		"eapid": 1,
@@ -12,7 +12,8 @@ async def request_photo(message: Message, hotel_id: int):
 		"propertyId": hotel_id
 	}
 	summary_url = "https://hotels4.p.rapidapi.com/properties/v2/get-summary"
-	summary_response = await api_request(message=message, method_type="POST", url=summary_url, params=payload)
+	payload = json.dumps(payload)
+	summary_response = await api_request(message=message, method_type="POST", url=summary_url, data=payload)
 	data = json.loads(summary_response)
 	if not data:
 		raise LookupError('Запрос пуст')
