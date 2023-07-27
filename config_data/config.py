@@ -1,5 +1,6 @@
 import os
 from dotenv import find_dotenv, load_dotenv
+from aiogram.types.bot_command import BotCommand
 
 
 if not find_dotenv():
@@ -15,11 +16,11 @@ else:
     password = os.getenv('PASSWORD')
     db_name = os.getenv('DATABASE')
 
-DEFAULT_COMMANDS = (
-    ("start", "Запустить бота"),
-    ("help", "Вывести справку"),
-    ("lower", "Вывод самых дешевых отелей в городе"),
-    ("high", "Вывод самых дорогих отелей в городе"),
-    ("custom", "Расширенный поиск."),
-    ("history", "Показать историю поиска"),
-)
+DEFAULT_COMMANDS = [
+    BotCommand(command="start", description="Запустить бота"),
+    BotCommand(command="help", description="Вывести справку"),
+    BotCommand(command="lower", description="Вывод самых дешевых отелей в городе"),
+    BotCommand(command="higher", description="Вывод самых дорогих отелей в городе"),
+    BotCommand(command="custom", description="Расширенный поиск."),
+    BotCommand(command="history", description="Показать историю поиска"),
+]

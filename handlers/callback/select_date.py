@@ -8,6 +8,7 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
+
 from api.find_hotel import find_hotel
 
 from filters import CalendarCallback
@@ -59,7 +60,11 @@ async def select_date(call: CallbackQuery, state: FSMContext, callback_data: Cal
     year, month, day = callback_data.year, callback_data.month, callback_data.day
     now_year, now_month, now_day = datetime.datetime.now().year, datetime.datetime.now().month,\
                                    datetime.datetime.now().day
-    if year + check_month_day(month) + check_month_day(day) < str(now_year) + check_month_day(month) + check_month_day(day):
+    select = year + check_month_day(month) + check_month_day(day)
+    now_date = str(now_year) + check_month_day(str(now_month)) + check_month_day(str(now_day))
+    print(select)
+    print(now_date)
+    if select > now_date:
         logger.info(f'Выбрана дата заезда {year}:{month}:{day} . User_id: {call.message.chat.id}')
         await state.update_data(CheckInDate={'day': day, 'month': month, 'year': year})
         await call.message.delete()
@@ -68,5 +73,4 @@ async def select_date(call: CallbackQuery, state: FSMContext, callback_data: Cal
     else:
         logger.info(f'Выбранная дата заезда меньше текущей даты. User_id: {call.message.chat.id}')
         await call.message.delete()
-        await my_calendar(call.message, 'заезда')
-        await call.message.answer('нужно выбрать дату, которая находится после текущего дня.')
+        await my_calendar(call.message, '. Дата должна быть больше сегодняшней даты.')

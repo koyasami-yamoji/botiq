@@ -8,7 +8,6 @@ from api.find_hotel import find_hotel
 from states.hotel_info_states import HotelInfoState
 from filters.check_distance import CheckNumDistance
 
-
 router = Router()
 
 
