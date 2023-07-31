@@ -2,6 +2,7 @@ from aiogram import Router
 from aiogram.filters import StateFilter
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
 from api.find_hotel import find_hotel
@@ -26,12 +27,12 @@ async def wrong_min_distance(message: Message):
 
 
 @router.message(StateFilter(HotelInfoState.max_distance_to_center), CheckNumDistance())
-async def get_max_distance_to_center(message: Message, state: FSMContext):
+async def get_max_distance_to_center(message: Message, state: FSMContext, session: AsyncSession):
 	logger.info(f'Ввод пользователем и запись максимального расстояния отеля до центра '
 				f'{message.text} User_id {message.chat.id}')
 	await state.update_data(max_distance=message.text)
 	data = await state.get_data()
-	await find_hotel(message, data, state)
+	await find_hotel(message, data, state, session=session)
 
 
 @router.message(StateFilter(HotelInfoState.max_distance_to_center))

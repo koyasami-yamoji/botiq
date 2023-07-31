@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardButton
 import calendar
 import datetime
@@ -77,7 +78,7 @@ class Calendar:
 		builder.row(*row)
 		return builder.as_markup()
 
-	async def calendar_query_handler(self, call, action, year, month, day):
+	async def calendar_query_handler(self, call: CallbackQuery, action, year, month, day):
 		(action, year, month, day) = (action, year, month, day)
 		current_data = datetime.datetime(int(year), int(month), 1)
 		if action == 'IGNORE':
@@ -86,17 +87,13 @@ class Calendar:
 
 		elif action == 'PREV-MONTH':
 			prev_month = current_data - datetime.timedelta(days=1)
-			await call.message.edit_message_text(
-								  chat_id=call.message.chat.id,
-								  message_id=call.message.message_id,
-								  reply_markup=self.create_calendar(int(prev_month.year), int(prev_month.month)))
+			await call.message.edit_reply_markup(
+				reply_markup=self.create_calendar(int(prev_month.year), int(prev_month.month)))
 			return None
 
 		elif action == 'NEXT-MONTH':
 			next_month = current_data + datetime.timedelta(days=31)
-			await call.message.edit_message_text(
-								  chat_id=call.message.chat.id,
-								  message_id=call.message.message_id,
+			await call.message.edit_reply_markup(
 								  reply_markup=self.create_calendar(int(next_month.year), int(next_month.month)))
 			return None
 

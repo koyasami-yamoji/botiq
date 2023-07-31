@@ -3,7 +3,7 @@ from aiogram.types import Message
 import json
 
 
-async def request_photo(message: Message, hotel_id):
+async def request_photo_and_hotel_info(message: Message, hotel_id):
 	payload = {
 		"currency": "USD",
 		"eapid": 1,

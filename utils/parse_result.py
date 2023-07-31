@@ -1,6 +1,6 @@
-def parse_result(parse_list: dict, data: dict) -> dict:
+def parse_result(message, parse_list: dict, data: dict) -> dict:
 	hotels_data = {}
-	if data['command'] in ['/lower', 'higher']:
+	if data['command'] in ['/lower', '/higher']:
 		for hotel in parse_list:
 			try:
 				hotels_data[hotel['id']] = create_hotel_data(hotel)
@@ -28,6 +28,6 @@ def create_hotel_data(hotel: dict) -> dict:
 				  'distance': hotel['destinationInfo']['distanceFromDestination']['value'] * 1.61,
 				  'unit': hotel['destinationInfo']['distanceFromDestination']['unit'],
 				  'price': hotel['price']['lead']['amount'],
-				  "user_rating": float(hotel['reviews']['total'])}
+				  "user_rating": round(float(hotel['reviews']['total']), 2)}
 
 	return hotel_data

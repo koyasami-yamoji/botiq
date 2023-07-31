@@ -1,17 +1,20 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from db.models import Photo
 
 
-def set_photo(photo: list[dict], session: Session) -> None:
+async def set_record_photo(images: list, hotel_id: int, session: AsyncSession) -> None:
     """
     Write photo to db
-    :param photo: List[Dict]
-    :param session: Session
+    :param session: AsyncSession
+    :param images: list
+    :param hotel_id: int
     :return: None
     """
-    for one_photo in photo:
+    for one_photo in images:
         record_photo = Photo()
-        record_photo.hotel_id = one_photo['id_hotel']
-        record_photo.photo = one_photo['url']
+        record_photo.hotel_id = hotel_id
+        record_photo.photo = one_photo
         session.add(record_photo)
-        session.commit()
+    await session.commit()
+

@@ -1,16 +1,16 @@
 import datetime
 
-from utils.create_calendar import my_calendar
-from keyboards.inline.calendar.calendar import Calendar, check_month_day
 from loguru import logger
-from states.hotel_info_states import HotelInfoState
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from keyboards.inline.calendar.calendar import Calendar, check_month_day
+from utils.create_calendar import my_calendar
 from api.find_hotel import find_hotel
-
+from states.hotel_info_states import HotelInfoState
 from filters import CalendarCallback
 
 
@@ -28,7 +28,8 @@ async def change_month(call: CallbackQuery, callback_data: CalendarCallback):
 
 
 @router.callback_query(StateFilter(HotelInfoState.out_date), CalendarCallback.filter(F.action == 'DAY'))
-async def select_out_date(call: CallbackQuery, state: FSMContext, callback_data: CalendarCallback):
+async def select_out_date(call: CallbackQuery, state: FSMContext, callback_data: CalendarCallback,
+                          session: AsyncSession):
     year = callback_data.year
     month = callback_data.month
     day = callback_data.day
@@ -48,7 +49,7 @@ async def select_out_date(call: CallbackQuery, state: FSMContext, callback_data:
 
         else:
             data = await state.get_data()
-            await find_hotel(message=call.message, data=data, state=state)
+            await find_hotel(message=call.message, data=data, state=state, session=session)
     else:
         await call.message.answer('Дата выезда должна быть больше даты заезда')
         await call.message.delete()

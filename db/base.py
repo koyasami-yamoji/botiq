@@ -1,15 +1,16 @@
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import declarative_base
 from config_data.config import user_name, password, host, port, db_name
-from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 
-engine = create_engine(f"postgresql+psycopg2://{user_name}:{password}@{host}:{port}/{db_name}")
+def engine_string():
+	result = f"postgresql+asyncpg://{user_name}:{password}@{host}:{port}/{db_name}"
+	return result
 
-Session_ = sessionmaker(bind=engine)
 
 Base = declarative_base()
+meta_data = Base.metadata
 
+engine = create_async_engine(url=engine_string())
 
-def session_factory():
-	Base.metadata.create_all(engine)
-	return Session_()
+session = async_sessionmaker(engine, expire_on_commit=False)

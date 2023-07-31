@@ -1,21 +1,20 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from db.models import Hotels, History
 
 
-def set_hotels(hotels: dict, record_history: History, session: Session) -> list[Hotels]:
+async def set_record_hotels(hotels: dict, record_history: History, session: AsyncSession) -> list[Hotels]:
 	recorded_hotels = []
 	for hotel in hotels.values():
 		record_hotels = Hotels()
 		record_hotels.history_id = record_history.id
-		record_hotels.hotel_id = hotel['id']
-		record_hotels.address = hotel['address']
+		record_hotels.hotel_id = int(hotel['id'])
 		record_hotels.name = hotel['name']
-		record_hotels.price = hotel['price']
-		record_hotels.user_rates = hotel['user_rates']
-		record_hotels.images = hotel['images']
-		record_hotels.distance = hotel['distance']
+		record_hotels.price = float(hotel['price'])
+		record_hotels.distance = float(hotel['distance'])
+		record_hotels.address = hotel['address']
+		if hotel.get('user_rates'):
+			record_hotels.user_rates = hotel['user_rates']
 		session.add(record_hotels)
 		recorded_hotels.append(record_hotels)
-	session.commit()
-
+	await session.commit()
 	return recorded_hotels
