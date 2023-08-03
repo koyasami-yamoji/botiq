@@ -1,7 +1,8 @@
 import aiohttp
 from aiogram.types import Message
-from config_data import config
 from loguru import logger
+
+from config_data import config
 
 
 async def api_request(message: Message, method_type: str, url: str, params: dict = None, data=None):

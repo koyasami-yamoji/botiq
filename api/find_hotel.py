@@ -1,15 +1,15 @@
-import asyncio
 import json
-from utils.parse_result import parse_result
+
 from aiogram.types import Message
-from api.api_request import api_request
-from api.request_photo_and_hotel_info import request_photo_and_hotel_info
-from utils.create_hotel_message import create_hotel_message
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.write_hotels import set_record_hotels
-from db.write_history import set_record_history
+from api.request_photo_and_hotel_info import request_photo_and_hotel_info
+from utils.parse_hotels_result import parse_result
+from api.api_request import api_request
+from utils.create_messages.create_final_message import create_hotel_message
+from db.write_to_db.write_hotels import set_record_hotels
+from db.write_to_db.write_history import set_record_history
 
 
 async def find_hotel(message: Message, data: dict, state: FSMContext, session: AsyncSession) -> None:
@@ -79,21 +79,23 @@ async def find_hotel(message: Message, data: dict, state: FSMContext, session: A
     record_history = await set_record_history(data, session)
     if not data_request:
         raise LookupError('Упс...Запрос пуст..')
-    parsed_hotels = parse_result(message, parse_list=data_request['data']['propertySearch']['properties'], data=data)
+    parsed_hotels = parse_result(parse_list=data_request['data']['propertySearch']['properties'],
+                                       data=data)
     if 'error' in parsed_hotels:
         await message.answer(f'{parsed_hotels["error"]}\n Ошибка, попробуйте ввести другие параметры')
     if parsed_hotels:
         count = 0
+        record_hotels = {}
         for hotel in parsed_hotels.values():
             if count < int(data['count_hotels']):
                 count += 1
                 info = await request_photo_and_hotel_info(message, hotel['id'])
                 hotel['address'] = info['address']
-                parsed_hotels[hotel['address']] = info['address']
                 hotel['images'] = info['images']
-
+                record_hotels.update({count: hotel})
                 await create_hotel_message(message=message, hotel=hotel, data=data, session=session)
-        await set_record_hotels(hotels=parsed_hotels, record_history=record_history, session=session)
+
+        await set_record_hotels(hotels=record_hotels, record_history=record_history, session=session)
     await session.close()
     await message.answer('Поиск закончен')
     await state.set_state(None)

@@ -1,6 +1,8 @@
-from api.api_request import api_request
-from aiogram.types import Message
 import json
+
+from aiogram.types import Message
+
+from api.api_request import api_request
 
 
 async def request_photo_and_hotel_info(message: Message, hotel_id):

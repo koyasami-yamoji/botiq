@@ -1,7 +1,7 @@
-from keyboards.inline.calendar.calendar import Calendar
 from aiogram.types import Message
-
 from loguru import logger
+
+from keyboards.inline.calendar.calendar import Calendar
 
 
 bot_calendar = Calendar()

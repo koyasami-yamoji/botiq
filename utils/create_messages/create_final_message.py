@@ -1,9 +1,8 @@
-
 from aiogram.types import Message, InputMediaPhoto
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.write_photo import set_record_photo
+from db.write_to_db.write_photo import set_record_photo
 
 
 async def create_hotel_message(message: Message, hotel: dict, data: dict, session: AsyncSession):

@@ -1,8 +1,10 @@
+import datetime
 from dataclasses import dataclass
+import calendar
+
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardButton
-import calendar
-import datetime
+
 from filters.callback_filter_factory import CalendarCallback
 
 

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import declarative_base
-from config_data.config import user_name, password, host, port, db_name
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from config_data.config import user_name, password, host, port, db_name
 
 
 def engine_string():
